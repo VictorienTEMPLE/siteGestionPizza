@@ -30,6 +30,6 @@ public class IngredientController {
                 .path("{id}")
                 .buildAndExpand(ingredientResponseDtoAjouter.id())
                 .toUri();
-        return ResponseEntity.created(location).build();
+        return ResponseEntity.created(location).body(ingredientResponseDtoAjouter);
     }
 }

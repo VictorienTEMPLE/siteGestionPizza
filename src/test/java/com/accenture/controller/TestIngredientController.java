@@ -1,6 +1,7 @@
 package com.accenture.controller;
 
 import com.accenture.service.IngredientService;
+import com.accenture.service.dto.IngredientRequestDto;
 import com.accenture.service.dto.IngredientResponseDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.Matchers;
@@ -17,22 +18,18 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-//@SpringBootTest
-//@AutoConfigureMockMvc
-@WebMvcTest(controllers = IngredientController.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 public class TestIngredientController {
     @Autowired
     private ObjectMapper objectMapper;
-
-    @MockitoBean
-    private IngredientService ingredientService;
 
     @Autowired
     MockMvc mockMvc;
 
     @Test
     void testPostIngredientAvecObjet() throws Exception{
-        IngredientResponseDto ingredientdto = new IngredientResponseDto(1,"Fromage",12,true);
+        IngredientRequestDto ingredientdto = new IngredientRequestDto("Fromage",12,true);
         mockMvc.perform(MockMvcRequestBuilders.post("/ingredients")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(ingredientdto)))
