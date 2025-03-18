@@ -3,7 +3,7 @@ package com.accenture.service;
 import org.mockito.InjectMocks;
 
 
-public class TestPizza {
+public class PizzaTest {
 //    @Mock //on crée le mockito.mock ici
 //    PizzaDAO daoMock = Mockito.mock(PizzaDAO.class);
 //    @Mock

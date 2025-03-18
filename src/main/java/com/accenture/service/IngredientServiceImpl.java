@@ -8,6 +8,8 @@ import com.accenture.service.dto.IngredientResponseDto;
 import com.accenture.service.mapper.IngredientMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class IngredientServiceImpl implements IngredientService{
 
@@ -35,5 +37,12 @@ public class IngredientServiceImpl implements IngredientService{
             throw new IngredientException("La quantité ne peux pas être nul");
         if (ingredientRequestDto.enStock()==null)
             throw new IngredientException("Le status ne peux pas être nul");
+    }
+    @Override
+    public List<IngredientResponseDto> lister() {
+        List<Ingredient> listIngredient =ingredientDAO.findAll();
+        return listIngredient.stream()
+                .map(ingredientMapper::toIngredientResponseDto)
+                .toList();
     }
 }

@@ -4,7 +4,6 @@ import com.accenture.exception.IngredientException;
 import com.accenture.repository.IngredientDAO;
 import com.accenture.repository.entity.Ingredient;
 import com.accenture.service.dto.IngredientRequestDto;
-import com.accenture.service.dto.IngredientRequestDto;
 import com.accenture.service.dto.IngredientResponseDto;
 import com.accenture.service.mapper.IngredientMapper;
 import org.junit.jupiter.api.Assertions;
@@ -15,8 +14,10 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
+
 @ExtendWith(MockitoExtension.class)
-public class TestIngredient {
+public class IngredientTest {
     @Mock
     IngredientDAO ingredientDAO;
 
@@ -69,6 +70,24 @@ public class TestIngredient {
         Mockito.when(mapperMock.toIngredientResponseDto(ingredientApres)).thenReturn(tomatesResponseDto);
         Assertions.assertSame(tomatesResponseDto, service.ajouter(tomates));
         Mockito.verify(ingredientDAO, Mockito.times(1)).save(ingredientAvant);
+    }
+
+    @Test
+    void testListerIngredient(){
+        Ingredient ingredient1 = new Ingredient("Tomates",12,true);
+        Ingredient ingredient2 = new Ingredient("olives",30,true);
+
+        IngredientResponseDto ingredientResponseDto1 = new IngredientResponseDto(1,"Tomates",12,true);
+        IngredientResponseDto ingredientResponseDto2 = new IngredientResponseDto(2,"Olives",30,true);
+
+        List<Ingredient> listIngredient = List.of(ingredient1,ingredient2);
+        List<IngredientResponseDto> listDto = List.of(ingredientResponseDto1,ingredientResponseDto2);
+
+        Mockito.when(ingredientDAO.findAll()).thenReturn(listIngredient);
+        Mockito.when(mapperMock.toIngredientResponseDto(ingredient1)).thenReturn(ingredientResponseDto1);
+        Mockito.when(mapperMock.toIngredientResponseDto(ingredient2)).thenReturn(ingredientResponseDto2);
+
+        Assertions.assertEquals(listDto, service.lister());
     }
 
 }

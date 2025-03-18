@@ -1,11 +1,3 @@
-DROP TABLE IF EXISTS ingredient;
-CREATE TABLE ingredient(
-    id SERIAL PRIMARY KEY,
-    nom VARCHAR(50) NOT NULL,
-    quantiteStock INTEGER NOT NULL,
-    enStock BIT NOT NULL
-);
-
-INSERT INTO ingredient (nom, quantiteStock, enStock) VALUES
+INSERT INTO INGREDIENT (nom, quantite_en_stock, en_stock) VALUES
 ('Tomates',12,true),
 ('Fromage',11,true);
