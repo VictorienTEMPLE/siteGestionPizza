@@ -9,6 +9,6 @@ import java.util.List;
 public record PizzaResponseDto(
         String nom,
         HashMap<Taille, Double> tarif,
-        List<Ingredient> ingredient,
+        List<Integer> idIngredient,
         Boolean actif) {
 }

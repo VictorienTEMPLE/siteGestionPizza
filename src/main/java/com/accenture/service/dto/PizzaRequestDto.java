@@ -10,7 +10,7 @@ public record PizzaRequestDto (
          int id,
          String nom,
          HashMap<Taille, Double> tarif,
-         List<Ingredient> ingredient,
+         List<Integer> idIngredient,
          Boolean actif) {
 
 }

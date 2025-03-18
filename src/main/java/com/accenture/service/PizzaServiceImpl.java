@@ -32,7 +32,7 @@ public class PizzaServiceImpl implements PizzaService {
             throw new PizzaException("La pizzaRequestDto ne peux pas être nul");
         if (pizzaRequestDto.nom() == null || pizzaRequestDto.nom().isBlank())
             throw new PizzaException("Le nom ne peux pas être nul, ou vide");
-        if (pizzaRequestDto.ingredient()==null || pizzaRequestDto.ingredient().isEmpty())
+        if (pizzaRequestDto.idIngredient() == null || pizzaRequestDto.idIngredient().isEmpty())
             throw new PizzaException("La liste des ingrédients ne peux pas être nul ou vide");
         if (pizzaRequestDto.tarif() == null)
             throw new PizzaException("Le tarif ne peux pas être nul");
