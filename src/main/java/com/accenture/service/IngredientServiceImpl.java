@@ -44,15 +44,6 @@ public class IngredientServiceImpl implements IngredientService{
         Ingredient ingredientEnreg = ingredientDAO.save(ingredientExistante);
         return ingredientMapper.toIngredientResponseDto(ingredientEnreg);
     }
-
-   
-    @Override
-    public List<IngredientResponseDto> lister(){
-        List<Ingredient> listIngredient = ingredientDAO.findAll();
-        return listIngredient.stream()
-                .map(ingredientMapper::toIngredientResponseDto)
-                .toList();
-    }
   
   
     @Override

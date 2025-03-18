@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
-public class IngredientTest {
+class IngredientTest {
     @Mock
     IngredientDAO ingredientDAO;
 
