@@ -8,6 +8,7 @@ import com.accenture.service.dto.IngredientResponseDto;
 import com.accenture.service.mapper.IngredientMapper;
 import jakarta.persistence.EntityNotFoundException;
 import org.jetbrains.annotations.NotNull;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,16 +21,18 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.List;
+
 @ExtendWith(MockitoExtension.class)
-class IngredientTest {
+public class IngredientTest {
     @Mock
     IngredientDAO ingredientDAO;
 
+    @InjectMocks //on créer le new tachServiceImpl ici
+    IngredientServiceImpl service;
+
     @Mock
     IngredientMapper mapperMock;
-
-    @InjectMocks
-    IngredientServiceImpl service;
 
 
     @Test
@@ -62,6 +65,7 @@ class IngredientTest {
     }
 
     @Test
+
     void testAjouterEnstockNull(){
         IngredientException ie = Assertions.assertThrows(IngredientException.class, ()->service.ajouter(new IngredientRequestDto("Tomate",12,null)));
         Assertions.assertEquals("Le status ne peux pas être nul", ie.getMessage());
@@ -75,19 +79,16 @@ class IngredientTest {
 
     @Test
     void testAjouterOk(){
-        IngredientRequestDto tomates = creerTomateRequestDto();
+        IngredientRequestDto tomates = new IngredientRequestDto("Tomate",12,true);
         IngredientResponseDto tomatesResponseDto = new IngredientResponseDto(1,"Tomates",12,true);
-        Ingredient ingredientAvant = creerTomate();
-        Ingredient ingredientApres = creerTomate();
+        Ingredient ingredientAvant = new Ingredient("Tomate",12,true);
+        Ingredient ingredientApres = new Ingredient("Tomate",12,true);
         Mockito.when(mapperMock.toIngredient(tomates)).thenReturn(ingredientAvant);
         Mockito.when(ingredientDAO.save(ingredientAvant)).thenReturn(ingredientApres);
         Mockito.when(mapperMock.toIngredientResponseDto(ingredientApres)).thenReturn(tomatesResponseDto);
         Assertions.assertSame(tomatesResponseDto, service.ajouter(tomates));
         Mockito.verify(ingredientDAO, Mockito.times(1)).save(ingredientAvant);
     }
-
-
-
 
     @Test
     void testModifierNull(){
@@ -152,7 +153,28 @@ class IngredientTest {
 
     }
 
-    private static IngredientResponseDto creerTomateResponseDto() {
+ 
+
+    @Test
+    void testListerIngredient(){
+        Ingredient ingredient1 = new Ingredient("Tomates",12,true);
+        Ingredient ingredient2 = new Ingredient("olives",30,true);
+
+        IngredientResponseDto ingredientResponseDto1 = new IngredientResponseDto(1,"Tomates",12,true);
+        IngredientResponseDto ingredientResponseDto2 = new IngredientResponseDto(2,"Olives",30,true);
+
+        List<Ingredient> listIngredient = List.of(ingredient1,ingredient2);
+        List<IngredientResponseDto> listDto = List.of(ingredientResponseDto1,ingredientResponseDto2);
+
+        Mockito.when(ingredientDAO.findAll()).thenReturn(listIngredient);
+        Mockito.when(mapperMock.toIngredientResponseDto(ingredient1)).thenReturn(ingredientResponseDto1);
+        Mockito.when(mapperMock.toIngredientResponseDto(ingredient2)).thenReturn(ingredientResponseDto2);
+
+        Assertions.assertEquals(listDto, service.lister());
+    }
+  
+  
+     private static IngredientResponseDto creerTomateResponseDto() {
         return new IngredientResponseDto(1, "Tomate", 10, true);
     }
 
@@ -164,10 +186,4 @@ class IngredientTest {
     private static Ingredient creerTomate() {
         return new Ingredient("Tomate", 12, true);
     }
-
-
-
-
-
-
 }

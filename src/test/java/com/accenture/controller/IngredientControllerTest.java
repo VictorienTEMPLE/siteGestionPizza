@@ -20,7 +20,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+
 class IngredientControllerTest {
+
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -76,3 +78,28 @@ class IngredientControllerTest {
 
 
 }
+    void testPostIngredientPasOk() throws Exception{
+        Ingredient ingredient = new Ingredient(null,12,true);
+
+        mockMvc.perform(
+                        MockMvcRequestBuilders.post("/ingredients")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(ingredient)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.type").value("Erreur validation"))
+                .andExpect(jsonPath("$.message").value("Le nom ne peux pas être null, ou vide"));
+
+    }
+
+    @Test
+    void testGetIngredientOk() throws Exception{
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/ingredients"))
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(2));
+    }
+
+
+
+}
+

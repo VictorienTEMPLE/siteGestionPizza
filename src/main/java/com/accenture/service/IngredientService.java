@@ -7,6 +7,8 @@ import jakarta.persistence.EntityNotFoundException;
 
 import java.util.List;
 
+import java.util.List;
+
 public interface IngredientService {
     IngredientResponseDto ajouter(IngredientRequestDto ingredientRequestDto) throws IngredientException;
 

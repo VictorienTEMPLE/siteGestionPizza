@@ -1,5 +1,6 @@
 package com.accenture.controller;
 
+import com.accenture.repository.entity.Ingredient;
 import com.accenture.service.IngredientService;
 import com.accenture.service.dto.IngredientRequestDto;
 import com.accenture.service.dto.IngredientResponseDto;

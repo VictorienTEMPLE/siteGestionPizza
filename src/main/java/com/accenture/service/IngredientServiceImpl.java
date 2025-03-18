@@ -10,7 +10,9 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
 import java.util.Optional;
+
 
 @Service
 public class IngredientServiceImpl implements IngredientService{
@@ -43,7 +45,40 @@ public class IngredientServiceImpl implements IngredientService{
         return ingredientMapper.toIngredientResponseDto(ingredientEnreg);
     }
 
-    private void verifierEtRemplacer(Ingredient nouvelle, Ingredient ingredientExistante) {
+   
+    @Override
+    public List<IngredientResponseDto> lister(){
+        List<Ingredient> listIngredient = ingredientDAO.findAll();
+        return listIngredient.stream()
+                .map(ingredientMapper::toIngredientResponseDto)
+                .toList();
+    }
+  
+  
+    @Override
+    public List<IngredientResponseDto> lister() {
+        List<Ingredient> listIngredient =ingredientDAO.findAll();
+        return listIngredient.stream()
+                .map(ingredientMapper::toIngredientResponseDto)
+                .toList();
+    }
+    private static void verifierAjout(IngredientRequestDto ingredientRequestDto) {
+        if (ingredientRequestDto == null)
+            throw new IngredientException("L'ingrédient ne peux pas être nul");
+        if (ingredientRequestDto.nom()==null || ingredientRequestDto.nom().isBlank())
+            throw new IngredientException("Le nom ne peux pas être null, ou vide");
+        if (ingredientRequestDto.quantiteEnStock() == null)
+            throw new IngredientException("La quantité ne peux pas être nul");
+        if(ingredientRequestDto.quantiteEnStock() < 0)
+            throw new IngredientException("La quantité ne peux pas être négative");
+        if (ingredientRequestDto.enStock() == null)
+            throw new IngredientException("Le status ne peux pas être nul");
+        if(ingredientRequestDto.quantiteEnStock() == 0 && Boolean.TRUE.equals(ingredientRequestDto.enStock()))
+            throw new IngredientException("Le enStock doit être false lors que la quantité est 0");
+    }
+  
+      
+       private void verifierEtRemplacer(Ingredient nouvelle, Ingredient ingredientExistante) {
         if(nouvelle == null)
             throw new IngredientException("L'ingrédient ne peux pas être nul");
         if(nouvelle.getNom() != null){
@@ -61,29 +96,5 @@ public class IngredientServiceImpl implements IngredientService{
             throw new IngredientException("Le enStock doit être false lors que la quantité est 0");
     }
 
-    @Override
-    public List<IngredientResponseDto> lister(){
-        List<Ingredient> listIngredient = ingredientDAO.findAll();
-        return listIngredient.stream()
-                .map(ingredientMapper::toIngredientResponseDto)
-                .toList();
-    }
-
-
-
-
-    private static void verifierAjout(IngredientRequestDto ingredientRequestDto) {
-        if (ingredientRequestDto == null)
-            throw new IngredientException("L'ingrédient ne peux pas être nul");
-        if (ingredientRequestDto.nom()==null || ingredientRequestDto.nom().isBlank())
-            throw new IngredientException("Le nom ne peux pas être null, ou vide");
-        if (ingredientRequestDto.quantiteEnStock() == null)
-            throw new IngredientException("La quantité ne peux pas être nul");
-        if(ingredientRequestDto.quantiteEnStock() < 0)
-            throw new IngredientException("La quantité ne peux pas être négative");
-        if (ingredientRequestDto.enStock() == null)
-            throw new IngredientException("Le status ne peux pas être nul");
-        if(ingredientRequestDto.quantiteEnStock() == 0 && Boolean.TRUE.equals(ingredientRequestDto.enStock()))
-            throw new IngredientException("Le enStock doit être false lors que la quantité est 0");
-    }
+    
 }

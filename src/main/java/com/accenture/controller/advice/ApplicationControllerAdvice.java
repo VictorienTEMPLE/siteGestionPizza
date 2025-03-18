@@ -13,13 +13,13 @@ import java.time.LocalDateTime;
 public class ApplicationControllerAdvice {
 
     @ExceptionHandler(IngredientException.class)
-    public ResponseEntity<MessageError> handleIngredientException(IngredientException e) {
+    public ResponseEntity<MessageError> handleIngredientException(IngredientException e){
         MessageError me = new MessageError(LocalDateTime.now(), "Erreur validation", e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(me);
     }
 
     @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<MessageError> handleEntityNotFoundException(EntityNotFoundException e) {
+    public ResponseEntity<MessageError> handleEntityNotFoundException(EntityNotFoundException e){
         MessageError me = new MessageError(LocalDateTime.now(), "Erreur fonctionnelle", e.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(me);
     }
