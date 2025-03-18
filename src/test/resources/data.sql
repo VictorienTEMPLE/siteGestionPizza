@@ -1,3 +1,3 @@
-INSERT INTO INGREDIENT (nom, quantite_en_stock, en_stock) VALUES
-('Tomates',12,true),
+INSERT INTO ingredient (nom, quantite_en_stock, en_stock) VALUES
+('Tomate',12,true),
 ('Fromage',11,true);

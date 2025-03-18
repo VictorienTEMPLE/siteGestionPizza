@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 
 @RestControllerAdvice
 public class ApplicationControllerAdvice {
+
     @ExceptionHandler(IngredientException.class)
     public ResponseEntity<MessageError> handleIngredientException(IngredientException e){
         MessageError me = new MessageError(LocalDateTime.now(), "Erreur validation", e.getMessage());

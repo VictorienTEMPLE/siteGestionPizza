@@ -6,5 +6,5 @@ public record MessageError(
         LocalDateTime date,
         String type,
         String message
-) {
-}
+)
+{}

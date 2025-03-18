@@ -20,7 +20,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-public class IngredientControllerTest {
+
+class IngredientControllerTest {
+
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -40,6 +42,42 @@ public class IngredientControllerTest {
     }
 
     @Test
+    void testTrouverOk() throws Exception{
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/ingredients"))
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(2));
+    }
+
+    @Test
+    void testModofierIdExistePas() throws Exception {
+        IngredientRequestDto tomate = new IngredientRequestDto("Tomate",10,true);
+        mockMvc.perform(MockMvcRequestBuilders.patch("/ingredients/56")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(tomate)))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.type").value("Erreur fonctionnelle"))
+                .andExpect(jsonPath("$.message").value("L'id n'existe pas"));
+    }
+
+    @Test
+    void testModifierOk() throws Exception{
+        IngredientRequestDto tomate = new IngredientRequestDto("Tomate",10,true);
+        mockMvc.perform(MockMvcRequestBuilders.patch("/ingredients/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(tomate)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").isNumber())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.nom").value("Tomate"))
+                .andExpect(jsonPath("$.quantiteEnStock").value(10))
+                .andExpect(jsonPath("$.enStock").value(true));
+    }
+
+
+
+
+}
     void testPostIngredientPasOk() throws Exception{
         Ingredient ingredient = new Ingredient(null,12,true);
 
@@ -64,3 +102,4 @@ public class IngredientControllerTest {
 
 
 }
+
