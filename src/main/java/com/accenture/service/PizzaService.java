@@ -2,7 +2,8 @@ package com.accenture.service;
 
 import com.accenture.exception.PizzaException;
 import com.accenture.service.dto.PizzaRequestDto;
+import com.accenture.service.dto.PizzaResponseDto;
 
 public interface PizzaService {
-    public PizzaException ajouter(PizzaRequestDto pizzaRequestDto) throws PizzaException;
+    public PizzaResponseDto ajouter(PizzaRequestDto pizzaRequestDto) throws PizzaException;
     }
