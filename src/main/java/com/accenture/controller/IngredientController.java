@@ -3,14 +3,13 @@ package com.accenture.controller;
 import com.accenture.service.IngredientService;
 import com.accenture.service.dto.IngredientRequestDto;
 import com.accenture.service.dto.IngredientResponseDto;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/ingredients")
@@ -32,4 +31,16 @@ public class IngredientController {
                 .toUri();
         return ResponseEntity.created(location).body(ingredientResponseDtoAjouter);
     }
+
+    @GetMapping
+    List<IngredientResponseDto> trouverTous(){
+        return ingredientService.lister();
+    }
+
+    @PatchMapping("/{id}")
+    ResponseEntity<IngredientResponseDto> modifier(@PathVariable int id, @RequestBody IngredientRequestDto ingredientRequestDto){
+        IngredientResponseDto responseDto = ingredientService.modifier(id,ingredientRequestDto);
+        return ResponseEntity.ok(responseDto);
+    }
+
 }
