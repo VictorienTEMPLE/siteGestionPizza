@@ -7,8 +7,10 @@ import java.util.HashMap;
 import java.util.List;
 
 public record PizzaResponseDto(
+        int id,
         String nom,
         HashMap<Taille, Double> tarif,
-        List<Integer> idIngredient,
-        Boolean actif) {
+        List<String> nomIngredients,
+        Boolean actif
+) {
 }
