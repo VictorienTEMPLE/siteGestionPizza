@@ -1,8 +1,5 @@
 package com.accenture.controller;
 
-import com.accenture.repository.entity.Ingredient;
-import com.accenture.repository.entity.Pizza;
-import com.accenture.service.dto.IngredientRequestDto;
 import com.accenture.service.dto.PizzaRequestDto;
 import com.accenture.shared.Taille;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -66,6 +63,27 @@ public class PizzaControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.type").value("Erreur validation"))
                 .andExpect(jsonPath("$.message").value("Le nom ne peux pas être nul, ou vide"));
+
+    }
+
+    @Test
+    void testSupprimerIdExistePas() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.delete("/pizzas/56"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.type").value("Erreur fonctionnelle"))
+                .andExpect(jsonPath("$.message").value("L'id n'existe pas"));
+    }
+
+    @Test
+    void testSupprimerOk() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.delete("/pizzas/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").isNumber())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.message").value("false"));
+
+
+
 
     }
 

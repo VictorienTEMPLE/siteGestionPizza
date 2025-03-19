@@ -6,6 +6,7 @@ import com.accenture.repository.entity.Pizza;
 import com.accenture.service.dto.PizzaRequestDto;
 import com.accenture.service.dto.PizzaResponseDto;
 import com.accenture.service.mapper.PizzaMapper;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -26,6 +27,16 @@ public class PizzaServiceImpl implements PizzaService {
         Pizza pizzaEnreg = pizzaDAO.save(pizza);
         System.out.println(pizza);
         return pizzaMapper.toPizzaResponseDto(pizzaEnreg);
+    }
+
+
+    @Override
+    public PizzaResponseDto supprimer(int id) throws EntityNotFoundException{
+        Pizza pizzaASupprimer = pizzaDAO.findById(id).orElseThrow(()->new EntityNotFoundException("L'id n'existe pas"));
+        pizzaASupprimer.setId(id);
+        pizzaASupprimer.setActif(false);
+        pizzaDAO.save(pizzaASupprimer);
+        return pizzaMapper.toPizzaResponseDto(pizzaASupprimer);
     }
 
     private static void verifierAjout(PizzaRequestDto pizzaRequestDto) {

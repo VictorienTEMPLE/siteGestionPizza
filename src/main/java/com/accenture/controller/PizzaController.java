@@ -4,10 +4,7 @@ import com.accenture.service.PizzaService;
 import com.accenture.service.dto.PizzaRequestDto;
 import com.accenture.service.dto.PizzaResponseDto;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
@@ -23,8 +20,8 @@ public class PizzaController {
     }
 
     @PostMapping
-    ResponseEntity<PizzaResponseDto> ajouter(@RequestBody PizzaRequestDto pizzaRequestDto){
-        PizzaResponseDto pizzaResponseDtoAjoute= pizzaService.ajouter(pizzaRequestDto);
+    ResponseEntity<PizzaResponseDto> ajouter(@RequestBody PizzaRequestDto pizzaRequestDto) {
+        PizzaResponseDto pizzaResponseDtoAjoute = pizzaService.ajouter(pizzaRequestDto);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("{id}")
@@ -33,4 +30,11 @@ public class PizzaController {
         return ResponseEntity.created(location).body(pizzaResponseDtoAjoute);
 
     }
+
+    @DeleteMapping("/{id}")
+    ResponseEntity<PizzaResponseDto> supprimer(@PathVariable int id){
+        PizzaResponseDto responseDto = pizzaService.supprimer(id);
+        return ResponseEntity.ok(responseDto);
+    }
+
 }
