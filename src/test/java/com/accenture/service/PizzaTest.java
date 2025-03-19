@@ -62,45 +62,45 @@ public class PizzaTest {
 
     @Test
     void testAjouterNomNull() {
-        PizzaException ie = Assertions.assertThrows(PizzaException.class, () -> service.ajouter(new PizzaRequestDto(1, null, tarifDefini(), List.of(1,2),true)));
+        PizzaException ie = Assertions.assertThrows(PizzaException.class, () -> service.ajouter(new PizzaRequestDto( null, tarifDefini(), List.of(1,2),true)));
         Assertions.assertEquals("Le nom ne peux pas être nul, ou vide", ie.getMessage());
     }
 
     @Test
     void testAjouterNomBlank() {
-        PizzaException ie = Assertions.assertThrows(PizzaException.class, () -> service.ajouter(new PizzaRequestDto(1, "", tarifDefini(), List.of(1,2),true)));
+        PizzaException ie = Assertions.assertThrows(PizzaException.class, () -> service.ajouter(new PizzaRequestDto( "", tarifDefini(), List.of(1,2),true)));
         Assertions.assertEquals("Le nom ne peux pas être nul, ou vide", ie.getMessage());
     }
 
 
     @Test
     void testAjouterListeIngredientNull(){
-        PizzaException ie = Assertions.assertThrows(PizzaException.class, () -> service.ajouter(new PizzaRequestDto(1, "Quattre Fromages", tarifDefini(), null,true)));
+        PizzaException ie = Assertions.assertThrows(PizzaException.class, () -> service.ajouter(new PizzaRequestDto( "Quattre Fromages", tarifDefini(), null,true)));
         Assertions.assertEquals("La liste des ingrédients ne peux pas être nul ou vide", ie.getMessage());
     }
 
     @Test
     void testAjouterListeIngredientvide(){
-        PizzaException ie = Assertions.assertThrows(PizzaException.class, () -> service.ajouter(new PizzaRequestDto(1, "Quattre Fromages", tarifDefini(), List.of(),true)));
+        PizzaException ie = Assertions.assertThrows(PizzaException.class, () -> service.ajouter(new PizzaRequestDto("Quattre Fromages", tarifDefini(), List.of(),true)));
         Assertions.assertEquals("La liste des ingrédients ne peux pas être nul ou vide", ie.getMessage());
     }
 
     @Test
     void testAjoutertarifNull(){
-        PizzaException ie = Assertions.assertThrows(PizzaException.class, () -> service.ajouter(new PizzaRequestDto(1, "Quattre Fromages", null, List.of(1,2),true)));
+        PizzaException ie = Assertions.assertThrows(PizzaException.class, () -> service.ajouter(new PizzaRequestDto( "Quattre Fromages", null, List.of(1,2),true)));
         Assertions.assertEquals("Le tarif ne peux pas être nul", ie.getMessage());
     }
 
     @Test
     void testAjouteractifNull(){
-        PizzaException ie = Assertions.assertThrows(PizzaException.class, () -> service.ajouter(new PizzaRequestDto(1, "Quattre Fromages", tarifDefini(), List.of(1,2),null)));
+        PizzaException ie = Assertions.assertThrows(PizzaException.class, () -> service.ajouter(new PizzaRequestDto( "Quattre Fromages", tarifDefini(), List.of(1,2),null)));
         Assertions.assertEquals("Le status ne peux pas être nul", ie.getMessage());
     }
 
     @Test
     void TestAjouterOk(){
-        PizzaRequestDto pizzaRequestDto = new PizzaRequestDto(1, "Quattre Fromages", tarifDefini(), List.of(1,2),true);
-        PizzaResponseDto pizzaResponseDto = new PizzaResponseDto("Quattre Fromages", tarifDefini(), List.of(1,2),true);
+        PizzaRequestDto pizzaRequestDto = new PizzaRequestDto("Quattre Fromages", tarifDefini(), List.of(1,2),true);
+        PizzaResponseDto pizzaResponseDto = new PizzaResponseDto(1,"Quattre Fromages", tarifDefini(), List.of("tomates","fromages"),true);
         Pizza pizzaAvant = new Pizza("Quattre Fromages",tarifDefini() , listIngredients(),true);
         Pizza pizzaApres = new Pizza("Quattre Fromages",tarifDefini() , listIngredients(),true);
         Mockito.when(mapperMock.toPizza(pizzaRequestDto)).thenReturn(pizzaAvant);

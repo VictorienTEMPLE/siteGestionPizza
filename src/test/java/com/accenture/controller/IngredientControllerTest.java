@@ -75,7 +75,7 @@ class IngredientControllerTest {
     }
 
 
-
+    @Test
     void testPostIngredientPasOk() throws Exception{
         Ingredient ingredient = new Ingredient(null,12,true);
 

@@ -3,21 +3,34 @@ package com.accenture.repository.entity;
 import com.accenture.shared.Taille;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
+@Data
 public class Pizza {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String nom;
-    private HashMap<Taille, Double>tarif;
+    @ElementCollection
+    @CollectionTable(name = "pizza_tarif", joinColumns = @JoinColumn(name = "pizza_id"))
+    @MapKeyEnumerated(EnumType.STRING) // Stocke la clé de l'EnumMap sous forme de chaîne
+    @Column(name = "tarif") // Valeur stockée
+    private Map<Taille, Double> tarif = new EnumMap<>(Taille.class);
     @ManyToMany
+    @JoinTable(name = "pizza_ingredient",
+    joinColumns = {@JoinColumn(name ="pizza_id")},
+    inverseJoinColumns = {@JoinColumn(name = "ingredient_id")})
     private List<Ingredient> ingredient;
     private Boolean actif;
 
@@ -27,4 +40,6 @@ public class Pizza {
         this.ingredient = ingredient;
         this.actif = actif;
     }
+
+
 }

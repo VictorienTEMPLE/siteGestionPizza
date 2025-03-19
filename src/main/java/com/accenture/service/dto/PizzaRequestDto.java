@@ -5,12 +5,13 @@ import com.accenture.shared.Taille;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public record PizzaRequestDto (
-         int id,
+
          String nom,
-         HashMap<Taille, Double> tarif,
-         List<Integer> idIngredient,
+         Map<Taille, Double> tarif,
+         List<Integer> id_ingredient,
          Boolean actif) {
 
 }
