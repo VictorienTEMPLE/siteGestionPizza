@@ -80,7 +80,7 @@ public class PizzaControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").isNumber())
                 .andExpect(jsonPath("$.id").value(1))
-                .andExpect(jsonPath("$.message").value("false"));
+                .andExpect(jsonPath("$.actif").value("false"));
 
 
 
