@@ -6,6 +6,10 @@ INSERT INTO pizza (nom, actif) VALUES
 ('Margarita', true),
 ('Quatre Fromages', true);
 
+INSERT INTO client (nom, mail, vip) VALUES
+('Legrand','joelegrand@email.com', false),
+('Solaire','flowrahsolaire@email.com',true);
+
 INSERT INTO pizza_tarif (pizza_id, taille, tarif) VALUES
 (1, 'PETITE', 7.0);
 
