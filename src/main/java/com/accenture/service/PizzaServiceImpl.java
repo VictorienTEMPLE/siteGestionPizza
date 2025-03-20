@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import java.util.Optional;
+
 @Service
 public class PizzaServiceImpl implements PizzaService {
 
@@ -72,9 +74,37 @@ public class PizzaServiceImpl implements PizzaService {
     }
 
 
+    @Override
+    public PizzaResponseDto modifier(int id, PizzaRequestDto pizzaRequestDto) throws  PizzaException,  EntityNotFoundException{
+        if (pizzaRequestDto == null)
+            throw new PizzaException("La pizza ne peux pas être nul");
+        Optional<Pizza> optPizza = pizzaDAO.findById(id);
+        if (optPizza.isEmpty())
+            throw new EntityNotFoundException("L'id n'existe pas");
+        Pizza nouvellePizza = pizzaMapper.toPizza(pizzaRequestDto);
+        Pizza pizzaExistante = optPizza.get();
+        remplacerPizza(nouvellePizza, pizzaExistante);
+        Pizza pizzaEnreg = pizzaDAO.save(pizzaExistante);
+        return pizzaMapper.toPizzaResponseDto(pizzaEnreg);
+    }
+
+    private static void remplacerPizza(Pizza nouvellePizza, Pizza pizzaExistante) {
+        if (nouvellePizza.getNom()!=null) {
+            if (nouvellePizza.getNom().isBlank())
+                throw new PizzaException("Le nom ne peux pas être vide");
+            pizzaExistante.setNom(nouvellePizza.getNom());
+        }
+        if (nouvellePizza.getIngredient()!=null)
+            pizzaExistante.setIngredient(nouvellePizza.getIngredient());
+        if (nouvellePizza.getTarif()!=null)
+            pizzaExistante.setTarif(nouvellePizza.getTarif());
+        if (nouvellePizza.getActif()!=null)
+            pizzaExistante.setActif(nouvellePizza.getActif());
+    }
+
     private static void verifierAjout(PizzaRequestDto pizzaRequestDto) {
         if (pizzaRequestDto == null)
-            throw new PizzaException("La pizzaRequestDto ne peux pas être nul");
+            throw new PizzaException("La pizza ne peux pas être nul");
         if (pizzaRequestDto.nom() == null || pizzaRequestDto.nom().isBlank())
             throw new PizzaException("Le nom ne peux pas être nul, ou vide");
         if (pizzaRequestDto.id_ingredient() == null || pizzaRequestDto.id_ingredient().isEmpty())

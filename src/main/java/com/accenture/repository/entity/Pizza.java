@@ -26,7 +26,7 @@ public class Pizza {
     @MapKeyEnumerated(EnumType.STRING) // Stocke la clé de l'EnumMap sous forme de chaîne
     @MapKeyColumn(name = "taille")
     @Column(name = "tarif") // Valeur stockée
-    private Map<Taille, Double> tarif = new EnumMap<>(Taille.class);
+    private Map<Taille, Double> tarif;
     @ManyToMany
     @JoinTable(name = "pizza_ingredient",
     joinColumns = {@JoinColumn(name ="pizza_id")},

@@ -38,6 +38,12 @@ public class PizzaController {
         return ResponseEntity.ok(responseDto);
     }
 
+    @PatchMapping("/{id}")
+    ResponseEntity<PizzaResponseDto> modifier(@PathVariable int id, @RequestBody PizzaRequestDto pizzaRequestDto){
+        PizzaResponseDto responseDto = pizzaService.modifier(id,pizzaRequestDto);
+        return ResponseEntity.ok(responseDto);
+    }
+
     @GetMapping
     List<PizzaResponseDto> trouverTous(){
         return pizzaService.trouverTous();

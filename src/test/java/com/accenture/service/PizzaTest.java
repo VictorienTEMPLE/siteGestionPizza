@@ -4,6 +4,8 @@ import com.accenture.exception.PizzaException;
 import com.accenture.repository.PizzaDAO;
 import com.accenture.repository.entity.Ingredient;
 import com.accenture.repository.entity.Pizza;
+import com.accenture.service.dto.IngredientRequestDto;
+import com.accenture.service.dto.IngredientResponseDto;
 import com.accenture.service.dto.PizzaRequestDto;
 import com.accenture.service.dto.PizzaResponseDto;
 import com.accenture.service.mapper.PizzaMapper;
@@ -19,6 +21,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.*;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+
 @ExtendWith(MockitoExtension.class)
 public class PizzaTest {
     @Mock
@@ -32,7 +37,7 @@ public class PizzaTest {
     @Test
     void testAjouterNull() {
         PizzaException pe = Assertions.assertThrows(PizzaException.class, () -> service.ajouter(null));
-        Assertions.assertEquals("La pizzaRequestDto ne peux pas être nul", pe.getMessage());
+        Assertions.assertEquals("La pizza ne peux pas être nul", pe.getMessage());
     }
 
 
@@ -173,6 +178,51 @@ public class PizzaTest {
         Mockito.when(mapperMock.toPizzaResponseDto(listePizza.get(1))).thenReturn(listePizzaDto.get(1));
         Assertions.assertEquals(listePizzaDto, service.filtrerParIngredient("Tomate"));
     }
+
+    @Test
+    void testModifierNull(){
+        PizzaException pe = Assertions.assertThrows(PizzaException.class,()->service.modifier(1,null));
+        Assertions.assertEquals("La pizza ne peux pas être nul", pe.getMessage());
+    }
+    @Test
+    void testModifierIdNonExistante(){
+        Mockito.when(daoMock.findById(1)).thenReturn(Optional.empty());
+        EntityNotFoundException pe = Assertions.assertThrows(EntityNotFoundException.class,()-> service.modifier(1, new PizzaRequestDto("  " ,tarifDefini(),List.of(1,2),true)));
+        Assertions.assertEquals("L'id n'existe pas", pe.getMessage());
+    }
+
+    @Test
+    void testModifierNomBlank(){
+        Pizza nouvellePizza = new Pizza("  ",tarifDefini(),listIngredients(),true);
+        PizzaRequestDto pizzaRequestDto = new PizzaRequestDto("  ",tarifDefini(),List.of(1,2),true);
+        Mockito.when(daoMock.findById(1)).thenReturn(Optional.of(nouvellePizza));
+        Mockito.when(mapperMock.toPizza(pizzaRequestDto)).thenReturn(nouvellePizza);
+        PizzaException pe = Assertions.assertThrows(PizzaException.class, ()->service.modifier(1,pizzaRequestDto));
+        Assertions.assertEquals("Le nom ne peux pas être vide", pe.getMessage());
+    }
+
+    @Test
+    void testModifierOk(){
+        Pizza pizzaAModifier = creerPizza();
+        PizzaRequestDto pizzaRequestDto = new PizzaRequestDto("Quatres fromages", tarifDefini(), List.of(1,2),true);
+        Pizza pizzaEnreg = creerPizza();
+        pizzaEnreg.setId(1);
+        PizzaResponseDto pizzaResponseDto = creerPizzaResponseDto();
+        Mockito.when(daoMock.findById(1)).thenReturn(Optional.of(pizzaAModifier));
+        Mockito.when(mapperMock.toPizza(pizzaRequestDto)).thenReturn(pizzaEnreg);
+        Mockito.when(mapperMock.toPizzaResponseDto(pizzaEnreg)).thenReturn(pizzaResponseDto);
+        Mockito.when(daoMock.save(pizzaAModifier)).thenReturn(pizzaEnreg);
+        Assertions.assertEquals(pizzaResponseDto,service.modifier(1, pizzaRequestDto));
+        Mockito.verify(daoMock).save(pizzaAModifier);
+    }
+
+
+    /* *********************************************** *
+     *                                                 *
+     *                 methodes privées                *
+     *                                                 *
+     * *********************************************** *
+     */
 
     private static List<Ingredient> listIngredients(){
         Ingredient ingredient1 = new Ingredient("Tomate",12,true);

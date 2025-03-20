@@ -19,4 +19,6 @@ public interface PizzaService {
     PizzaResponseDto filtrerParNom(String nom) throws EntityNotFoundException;
 
     List<PizzaResponseDto> filtrerParIngredient(String nom);
+
+    PizzaResponseDto modifier(int id, PizzaRequestDto pizzaRequestDto) throws  PizzaException, EntityNotFoundException;
 }
