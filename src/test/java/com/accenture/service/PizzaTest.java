@@ -107,6 +107,73 @@ public class PizzaTest {
         Mockito.verify(daoMock).save(pizzaApresSupprimer);
     }
 
+
+    @Test
+    void testTrouverTousAvecBaseVide(){
+        Mockito.when(daoMock.findAll()).thenReturn(List.of());
+        Assertions.assertEquals(List.of(), service.trouverTous());
+    }
+    @Test
+    void testTrouverTousOK(){
+        Pizza pizza1 = creerPizza();
+        Pizza pizza2 = creerPizza2();
+        List<Pizza> listePizza = List.of(pizza1, pizza2);
+        PizzaResponseDto pizzaResponseDto1 = creerPizzaResponseDto();
+        PizzaResponseDto pizzaResponseDto2 = creerPizzaResponseDto2();
+        List<PizzaResponseDto> listePizzaDto = List.of(pizzaResponseDto1, pizzaResponseDto2);
+        Mockito.when(daoMock.findAll()).thenReturn(listePizza);
+        Mockito.when(mapperMock.toPizzaResponseDto(listePizza.getFirst())).thenReturn(listePizzaDto.getFirst());
+        Mockito.when(mapperMock.toPizzaResponseDto(listePizza.get(1))).thenReturn(listePizzaDto.get(1));
+        Assertions.assertEquals(listePizzaDto, service.trouverTous());
+    }
+
+    @Test
+    void testFiltrerParIdAvecIdExistePas(){
+        Mockito.when(daoMock.findById(1)).thenReturn(Optional.empty());
+        EntityNotFoundException pe = Assertions.assertThrows(EntityNotFoundException.class,()->service.filtrerParId(1));
+        Assertions.assertEquals("L'id n'existe pas", pe.getMessage());
+    }
+
+    @Test
+    void testFiltrerParIdOk(){
+        Pizza pizza = creerPizza();
+        PizzaResponseDto pizzaResponseDto = creerPizzaResponseDto();
+        Mockito.when(daoMock.findById(1)).thenReturn(Optional.of(pizza));
+        Mockito.when(mapperMock.toPizzaResponseDto(pizza)).thenReturn(pizzaResponseDto);
+        Assertions.assertEquals(pizzaResponseDto, service.filtrerParId(1));
+    }
+
+
+    @Test
+    void testFiltrerParNomAvecNomExistePas(){
+        Mockito.when(daoMock.findByNomIgnoreCase("Hawaïenne")).thenReturn(Optional.empty());
+        EntityNotFoundException entityNotFoundException = Assertions.assertThrows(EntityNotFoundException.class,()->service.filtrerParNom("Hawaïenne"));
+        Assertions.assertEquals( "Pizza avec ce nom n'existe pas", entityNotFoundException.getMessage());
+    }
+
+    @Test
+    void testFiltrerParNomOK(){
+        Pizza pizzaTrouve = creerPizza();
+        PizzaResponseDto pizzaResponseDto = creerPizzaResponseDto();
+        Mockito.when(daoMock.findByNomIgnoreCase("Margherita")).thenReturn(Optional.of(pizzaTrouve));
+        Mockito.when(mapperMock.toPizzaResponseDto(pizzaTrouve)).thenReturn(pizzaResponseDto);
+        Assertions.assertEquals(pizzaResponseDto, service.filtrerParNom("Margherita"));
+    }
+
+    @Test
+    void testFiltrerParIngredientOK(){
+        Pizza pizzaTrouve = creerPizza();
+        Pizza pizzaTrouve2 = creerPizza2();
+        List<Pizza> listePizza = List.of(pizzaTrouve, pizzaTrouve2);
+        PizzaResponseDto pizzaResponseDto = creerPizzaResponseDto();
+        PizzaResponseDto pizzaResponseDto1 = creerPizzaResponseDto2();
+        List<PizzaResponseDto> listePizzaDto = List.of(pizzaResponseDto1, pizzaResponseDto);
+        Mockito.when(daoMock.findByIngredientNom("Tomate")).thenReturn(listePizza);
+        Mockito.when(mapperMock.toPizzaResponseDto(listePizza.getFirst())).thenReturn(listePizzaDto.getFirst());
+        Mockito.when(mapperMock.toPizzaResponseDto(listePizza.get(1))).thenReturn(listePizzaDto.get(1));
+        Assertions.assertEquals(listePizzaDto, service.filtrerParIngredient("Tomate"));
+    }
+
     private static List<Ingredient> listIngredients(){
         Ingredient ingredient1 = new Ingredient("Tomate",12,true);
         Ingredient ingredient2 = new Ingredient("Olive",30,true);
@@ -129,9 +196,14 @@ public class PizzaTest {
     private static Pizza creerPizza(){
         return new Pizza("Margherita",tarifDefini(),listIngredients(),true);
     }
+    private static Pizza creerPizza2(){return new Pizza("Quatre Fromages",tarifDefini(),listIngredients(),true);}
 
     private static PizzaResponseDto creerPizzaResponseDto(){
-        return new PizzaResponseDto(1,"Margherita",tarifDefini(),List.of(),true);
+        return new PizzaResponseDto(1,"Margherita",tarifDefini(),List.of("Tomate", "Olive"),true);
+    }
+
+    private static PizzaResponseDto creerPizzaResponseDto2(){
+        return new PizzaResponseDto(2,"Quatre Fromages",tarifDefini(),List.of("Tomate", "Olive"),true);
     }
 
 }

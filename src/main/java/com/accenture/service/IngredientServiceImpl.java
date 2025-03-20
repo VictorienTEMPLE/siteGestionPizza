@@ -44,8 +44,7 @@ public class IngredientServiceImpl implements IngredientService{
         Ingredient ingredientEnreg = ingredientDAO.save(ingredientExistante);
         return ingredientMapper.toIngredientResponseDto(ingredientEnreg);
     }
-  
-  
+
     @Override
     public List<IngredientResponseDto> lister() {
         List<Ingredient> listIngredient =ingredientDAO.findAll();
@@ -53,6 +52,11 @@ public class IngredientServiceImpl implements IngredientService{
                 .map(ingredientMapper::toIngredientResponseDto)
                 .toList();
     }
+
+
+
+
+
     private static void verifierAjout(IngredientRequestDto ingredientRequestDto) {
         if (ingredientRequestDto == null)
             throw new IngredientException("L'ingrédient ne peux pas être nul");

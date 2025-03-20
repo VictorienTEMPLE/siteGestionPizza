@@ -9,9 +9,12 @@ import com.accenture.service.mapper.PizzaMapper;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class PizzaServiceImpl implements PizzaService {
 
+    public static final String ID_EXISTE_PAS = "L'id n'existe pas";
     private final PizzaDAO pizzaDAO;
     private final PizzaMapper pizzaMapper;
 
@@ -32,12 +35,42 @@ public class PizzaServiceImpl implements PizzaService {
 
     @Override
     public PizzaResponseDto supprimer(int id) throws EntityNotFoundException{
-        Pizza pizzaASupprimer = pizzaDAO.findById(id).orElseThrow(()->new EntityNotFoundException("L'id n'existe pas"));
+        Pizza pizzaASupprimer = pizzaDAO.findById(id).orElseThrow(()->new EntityNotFoundException(ID_EXISTE_PAS));
         pizzaASupprimer.setId(id);
         pizzaASupprimer.setActif(false);
         pizzaDAO.save(pizzaASupprimer);
         return pizzaMapper.toPizzaResponseDto(pizzaASupprimer);
     }
+
+    @Override
+    public List<PizzaResponseDto> trouverTous(){
+        return pizzaDAO.findAll()
+                .stream()
+                .map(pizzaMapper::toPizzaResponseDto)
+                .toList();
+    }
+
+
+    @Override
+    public PizzaResponseDto filtrerParId(int id) throws EntityNotFoundException{
+        Pizza pizzaTrouve = pizzaDAO.findById(id).orElseThrow(()-> new EntityNotFoundException(ID_EXISTE_PAS));
+        return pizzaMapper.toPizzaResponseDto(pizzaTrouve);
+    }
+
+    @Override
+    public PizzaResponseDto filtrerParNom(String nom) throws EntityNotFoundException{
+        Pizza pizzaTrouve = pizzaDAO.findByNomIgnoreCase(nom).orElseThrow(()-> new EntityNotFoundException("Pizza avec ce nom n'existe pas"));
+        return pizzaMapper.toPizzaResponseDto(pizzaTrouve);
+    }
+
+    @Override
+    public List<PizzaResponseDto> filtrerParIngredient(String nom){
+        return pizzaDAO.findByIngredientNom(nom)
+                .stream()
+                .map(pizzaMapper::toPizzaResponseDto)
+                .toList();
+    }
+
 
     private static void verifierAjout(PizzaRequestDto pizzaRequestDto) {
         if (pizzaRequestDto == null)

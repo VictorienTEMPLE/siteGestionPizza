@@ -52,12 +52,9 @@ public class PizzaControllerTest {
     }
 
     @Test
-    void testPostIngredientPasOk() throws Exception{
-       // Pizza pizza = new Pizza(null,tarifDefini(),List.of(new Ingredient("Tomates",12,true),new Ingredient("fromage",21,true)),true);
+    void testPostPizzaPasOk() throws Exception{
         PizzaRequestDto pizzaRequestDto = new PizzaRequestDto( null, tarifDefini(), List.of(1,2),true);
-
-        mockMvc.perform(
-                        MockMvcRequestBuilders.post("/pizzas")
+        mockMvc.perform(MockMvcRequestBuilders.post("/pizzas")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(pizzaRequestDto)))
                 .andExpect(status().isBadRequest())
@@ -81,10 +78,60 @@ public class PizzaControllerTest {
                 .andExpect(jsonPath("$.id").isNumber())
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.actif").value("false"));
-
-
-
-
     }
+
+    @Test
+    void testTrouverTousOK() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/pizzas"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(2));
+    }
+
+    @Test
+    void testFiltrerParIdExistePas() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/pizzas/55"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.type").value("Erreur fonctionnelle"))
+                .andExpect(jsonPath("$.message").value("L'id n'existe pas"));
+    }
+
+    @Test
+    void testFiltrerParIdOk() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/pizzas/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").isNumber())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.nom").value("Margarita"));
+    }
+
+    @Test
+    void testFiltrerParNomExistePas() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/pizzas/filtrer/chaussure"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.type").value("Erreur fonctionnelle"))
+                .andExpect(jsonPath("$.message").value("Pizza avec ce nom n'existe pas"));
+    }
+
+
+    @Test
+    void testFiltrerParNomOk() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/pizzas/filtrer/Margarita"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").isNumber())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.nom").value("Margarita"));
+    }
+
+    @Test
+    void testFiltrerParIngredientOk() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/pizzas/filtrer/ingredient/Fromage"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(2));
+    }
+
+
+
+
+
 
 }
