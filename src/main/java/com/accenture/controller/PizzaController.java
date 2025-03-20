@@ -1,6 +1,7 @@
 package com.accenture.controller;
 
 import com.accenture.service.PizzaService;
+import com.accenture.service.dto.IngredientRequestDto;
 import com.accenture.service.dto.PizzaRequestDto;
 import com.accenture.service.dto.PizzaResponseDto;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +35,12 @@ public class PizzaController {
     @DeleteMapping("/{id}")
     ResponseEntity<PizzaResponseDto> supprimer(@PathVariable int id){
         PizzaResponseDto responseDto = pizzaService.supprimer(id);
+        return ResponseEntity.ok(responseDto);
+    }
+
+    @PatchMapping("/{id}")
+    ResponseEntity<PizzaResponseDto> modifier(@PathVariable int id, @RequestBody PizzaRequestDto pizzaRequestDto){
+        PizzaResponseDto responseDto = pizzaService.modifier(id,pizzaRequestDto);
         return ResponseEntity.ok(responseDto);
     }
 

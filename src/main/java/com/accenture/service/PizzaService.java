@@ -9,4 +9,6 @@ public interface PizzaService {
     public PizzaResponseDto ajouter(PizzaRequestDto pizzaRequestDto) throws PizzaException;
 
     PizzaResponseDto supprimer(int id) throws EntityNotFoundException;
+
+    PizzaResponseDto modifier(int id, PizzaRequestDto pizzaRequestDto) throws  PizzaException, EntityNotFoundException;
 }

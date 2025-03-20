@@ -4,6 +4,7 @@ import com.accenture.service.dto.PizzaRequestDto;
 import com.accenture.shared.Taille;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -15,7 +16,10 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import static org.hamcrest.Matchers.hasEntry;
+import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -81,10 +85,33 @@ public class PizzaControllerTest {
                 .andExpect(jsonPath("$.id").isNumber())
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.actif").value("false"));
-
-
-
-
     }
 
+    @Test
+    void testModifieridExistePas()throws Exception{
+        PizzaRequestDto pizzaRequestDto = new PizzaRequestDto("Quatres Fromages", tarifDefini(),List.of(1,2), true);
+        mockMvc.perform(MockMvcRequestBuilders.patch("/pizzas/69")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(pizzaRequestDto)))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.type").value("Erreur fonctionnelle"))
+                .andExpect(jsonPath("$.message").value("L'id n'existe pas"));
+    }
+    @Test
+    void testModifierOk() throws Exception{
+        PizzaRequestDto pizzaRequestDto = new PizzaRequestDto("Quatres Fromages", tarifDefini(),List.of(1,2), true);
+        mockMvc.perform(MockMvcRequestBuilders.patch("/pizzas/1")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(pizzaRequestDto)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").isNumber())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.nom").value("Quatres Fromages"))
+                .andExpect(jsonPath("$.tarif", hasEntry("PETITE", 7.0)))
+                .andExpect(jsonPath("$.tarif", hasEntry("MOYENNE", 12.0)))
+                .andExpect(jsonPath("$.tarif", hasEntry("GRANDE", 17.50)))
+                .andExpect(jsonPath("$.nomIngredients", hasItem("Tomate")))
+                .andExpect(jsonPath("$.nomIngredients", hasItem("Fromage")))
+                .andExpect(jsonPath("$.actif").value(true));
+    }
 }

@@ -96,7 +96,5 @@ class IngredientControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(2));
     }
 
-
-
 }
 
