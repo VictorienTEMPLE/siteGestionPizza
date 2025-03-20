@@ -61,7 +61,7 @@ public class PizzaControllerTest {
                                 .content(objectMapper.writeValueAsString(pizzaRequestDto)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.type").value("Erreur validation"))
-                .andExpect(jsonPath("$.message").value("Le nom ne peux pas être nul, ou vide"));
+                .andExpect(jsonPath("$.message").value("Le nom ne peut pas être nul, ou vide"));
 
     }
 

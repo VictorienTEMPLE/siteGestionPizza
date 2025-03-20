@@ -3,7 +3,6 @@ package com.accenture.service;
 import com.accenture.repository.ClientDAO;
 import com.accenture.repository.entity.Client;
 import com.accenture.service.dto.ClientResponseDto;
-import com.accenture.service.dto.PizzaResponseDto;
 import com.accenture.service.mapper.ClientMapper;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Assertions;
@@ -17,9 +16,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import com.accenture.exception.ClientException;
+
+import com.accenture.service.dto.ClientRequestDto;
+
 @ExtendWith(MockitoExtension.class)
-class ClientServiceImplTest {
+
+@ExtendWith(MockitoExtension.class)
+class ClientTest {
     @Mock
     ClientDAO daoMock = Mockito.mock(ClientDAO.class);
 
@@ -67,6 +71,65 @@ class ClientServiceImplTest {
 
 
 
+    @Test
+    void testAjouterClientAvecDtoNull(){
+        ClientException ce = Assertions.assertThrows(ClientException.class, () -> service.ajouter(null));
+        Assertions.assertEquals("Le client ne peut pas être nul", ce.getMessage());
+    }
+
+    @Test
+    void testAjouterClientAvecNomNull(){
+        ClientException ce = Assertions.assertThrows(ClientException.class, () -> service.ajouter(new ClientRequestDto(null,"emmanuel@gmail.com", true)));
+        Assertions.assertEquals("Le nom du client ne peut pas être nul ou vide", ce.getMessage());
+    }
+    @Test
+    void testAjouterClientAvecNomBlank(){
+        ClientException ce = Assertions.assertThrows(ClientException.class, () -> service.ajouter(new ClientRequestDto("  ","emmanuel@gmail.com", true)));
+        Assertions.assertEquals("Le nom du client ne peut pas être nul ou vide", ce.getMessage());
+    }
+
+
+    @Test
+    void testAjouterClientAvecMailNull(){
+        ClientException ce = Assertions.assertThrows(ClientException.class, () -> service.ajouter(new ClientRequestDto("Emmanuel",null, true)));
+        Assertions.assertEquals("Le mail du client ne peut pas être nul ou vide", ce.getMessage());
+    }
+
+    @Test
+    void testAjouterClientAvecMailBlank(){
+        ClientException ce = Assertions.assertThrows(ClientException.class, () -> service.ajouter(new ClientRequestDto("Emmanuel","    ", true)));
+        Assertions.assertEquals("Le mail du client ne peut pas être nul ou vide", ce.getMessage());
+    }
+
+
+    @Test
+    void testAjouterClientAvecMailMauvaiseFormat(){
+        ClientException ce = Assertions.assertThrows(ClientException.class, () -> service.ajouter(new ClientRequestDto("Emmanuel","emmanuelgmail.com", true)));
+        Assertions.assertEquals("Le format de mail du client est invalide", ce.getMessage());
+    }
+
+    @Test
+    void testAjouterClientAvecVipNull(){
+        ClientException ce = Assertions.assertThrows(ClientException.class, () -> service.ajouter(new ClientRequestDto("Emmanuel","emmanuel@gmail.com", null)));
+        Assertions.assertEquals("Le statut vip du client ne peut pas être nul", ce.getMessage());
+    }
+
+    @Test
+    void testAjouterClientOK(){
+        ClientRequestDto clientRequestDto = creerClientRequestDto();
+        Client client = creerClient();
+        Client clientEnreg = creerClient();
+        clientEnreg.setId(1);
+        ClientResponseDto clientResponseDto = creerClientResponseDto();
+        Mockito.when(mapperMock.toClient(clientRequestDto)).thenReturn(client);
+        Mockito.when(daoMock.save(client)).thenReturn(clientEnreg);
+        Mockito.when(mapperMock.toClientResponseDto(clientEnreg)).thenReturn(clientResponseDto);
+        Assertions.assertEquals(clientResponseDto,service.ajouter(clientRequestDto));
+        Mockito.verify(daoMock).save(client);
+
+    }
+
+
 
     /* *********************************************** *
      *                                                 *
@@ -87,5 +150,10 @@ class ClientServiceImplTest {
     private static ClientResponseDto creerClientResponseDto2(){
         return new ClientResponseDto(1,"Solaire","flowrahsolaire@email.com",true);
     }
+
+
+    private ClientRequestDto creerClientRequestDto(){
+        return new ClientRequestDto("Emmanuel","emmanuel@gmail.com", true);
+   }
 
 }

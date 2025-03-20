@@ -59,15 +59,15 @@ public class IngredientServiceImpl implements IngredientService{
 
     private static void verifierAjout(IngredientRequestDto ingredientRequestDto) {
         if (ingredientRequestDto == null)
-            throw new IngredientException("L'ingrédient ne peux pas être nul");
+            throw new IngredientException("L'ingrédient ne peut pas être nul");
         if (ingredientRequestDto.nom()==null || ingredientRequestDto.nom().isBlank())
-            throw new IngredientException("Le nom ne peux pas être null, ou vide");
+            throw new IngredientException("Le nom ne peut pas être null, ou vide");
         if (ingredientRequestDto.quantiteEnStock() == null)
-            throw new IngredientException("La quantité ne peux pas être nul");
+            throw new IngredientException("La quantité ne peut pas être nul");
         if(ingredientRequestDto.quantiteEnStock() < 0)
-            throw new IngredientException("La quantité ne peux pas être négative");
+            throw new IngredientException("La quantité ne peut pas être négative");
         if (ingredientRequestDto.enStock() == null)
-            throw new IngredientException("Le status ne peux pas être nul");
+            throw new IngredientException("Le status ne peut pas être nul");
         if(ingredientRequestDto.quantiteEnStock() == 0 && Boolean.TRUE.equals(ingredientRequestDto.enStock()))
             throw new IngredientException("Le enStock doit être false lors que la quantité est 0");
     }
@@ -75,14 +75,14 @@ public class IngredientServiceImpl implements IngredientService{
       
        private void verifierEtRemplacer(Ingredient nouvelle, Ingredient ingredientExistante) {
         if(nouvelle == null)
-            throw new IngredientException("L'ingrédient ne peux pas être nul");
+            throw new IngredientException("L'ingrédient ne peut pas être nul");
         if(nouvelle.getNom() != null){
             if(nouvelle.getNom().isBlank())
-                throw new IngredientException("Le nom ne peux pas être vide");
+                throw new IngredientException("Le nom ne peut pas être vide");
             else ingredientExistante.setNom(nouvelle.getNom());}
         if(nouvelle.getQuantiteEnStock() != null) {
             if (nouvelle.getQuantiteEnStock() < 0)
-                throw new IngredientException("La quantité ne peux pas être négative");
+                throw new IngredientException("La quantité ne peut pas être négative");
             else ingredientExistante.setQuantiteEnStock(nouvelle.getQuantiteEnStock());
         }
         if(nouvelle.getEnStock() != null)

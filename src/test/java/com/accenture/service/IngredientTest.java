@@ -37,37 +37,37 @@ class IngredientTest {
     @Test
     void testAjouterNull(){
        IngredientException ie = Assertions.assertThrows(IngredientException.class, ()->service.ajouter(null));
-       Assertions.assertEquals("L'ingrédient ne peux pas être nul",ie.getMessage());
+       Assertions.assertEquals("L'ingrédient ne peut pas être nul",ie.getMessage());
     }
 
     @Test
     void testAjouterNomNull(){
         IngredientException ie = Assertions.assertThrows(IngredientException.class, ()->service.ajouter(new IngredientRequestDto(null,12,true)));
-        Assertions.assertEquals("Le nom ne peux pas être null, ou vide", ie.getMessage());
+        Assertions.assertEquals("Le nom ne peut pas être null, ou vide", ie.getMessage());
     }
     @Test
     void testAjouterNomBlank(){
         IngredientException ie = Assertions.assertThrows(IngredientException.class, ()->service.ajouter(new IngredientRequestDto("",12,true)));
-        Assertions.assertEquals("Le nom ne peux pas être null, ou vide", ie.getMessage());
+        Assertions.assertEquals("Le nom ne peut pas être null, ou vide", ie.getMessage());
     }
 
     @Test
     void testAjouterQuantiteNull(){
         IngredientException ie = Assertions.assertThrows(IngredientException.class, ()->service.ajouter(new IngredientRequestDto("Tomate",null,true)));
-        Assertions.assertEquals("La quantité ne peux pas être nul", ie.getMessage());
+        Assertions.assertEquals("La quantité ne peut pas être nul", ie.getMessage());
     }
 
     @Test
     void testAjouterQuantiteNegative(){
         IngredientException ie = Assertions.assertThrows(IngredientException.class, ()->service.ajouter(new IngredientRequestDto("Tomate",-5,true)));
-        Assertions.assertEquals("La quantité ne peux pas être négative", ie.getMessage());
+        Assertions.assertEquals("La quantité ne peut pas être négative", ie.getMessage());
     }
 
     @Test
 
     void testAjouterEnstockNull(){
         IngredientException ie = Assertions.assertThrows(IngredientException.class, ()->service.ajouter(new IngredientRequestDto("Tomate",12,null)));
-        Assertions.assertEquals("Le status ne peux pas être nul", ie.getMessage());
+        Assertions.assertEquals("Le status ne peut pas être nul", ie.getMessage());
     }
 
     @Test
@@ -93,7 +93,7 @@ class IngredientTest {
     void testModifierNull(){
         Mockito.when(ingredientDAO.findById(1)).thenReturn(Optional.of(creerTomate()));
         IngredientException ie = Assertions.assertThrows(IngredientException.class, ()->service.modifier(1, null));
-        Assertions.assertEquals("L'ingrédient ne peux pas être nul",ie.getMessage());
+        Assertions.assertEquals("L'ingrédient ne peut pas être nul",ie.getMessage());
     }
 
     @Test
@@ -111,7 +111,7 @@ class IngredientTest {
         Mockito.when(ingredientDAO.findById(1)).thenReturn(Optional.of(creerTomate()));
         Mockito.when(mapperMock.toIngredient(tomateRequestDto)).thenReturn(nouvelleTomate);
         IngredientException ie = Assertions.assertThrows(IngredientException.class, ()->service.modifier(1,tomateRequestDto));
-        Assertions.assertEquals("Le nom ne peux pas être vide",ie.getMessage());
+        Assertions.assertEquals("Le nom ne peut pas être vide",ie.getMessage());
     }
 
     @Test
@@ -121,7 +121,7 @@ class IngredientTest {
         Mockito.when(ingredientDAO.findById(1)).thenReturn(Optional.of(creerTomate()));
         Mockito.when(mapperMock.toIngredient(tomateRequestDto)).thenReturn(nouvelleTomate);
         IngredientException ie = Assertions.assertThrows(IngredientException.class, ()->service.modifier(1,tomateRequestDto));
-        Assertions.assertEquals("La quantité ne peux pas être négative", ie.getMessage());
+        Assertions.assertEquals("La quantité ne peut pas être négative", ie.getMessage());
     }
 
     @Test

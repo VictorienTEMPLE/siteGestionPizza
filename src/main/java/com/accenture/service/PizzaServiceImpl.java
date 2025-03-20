@@ -77,7 +77,7 @@ public class PizzaServiceImpl implements PizzaService {
     @Override
     public PizzaResponseDto modifier(int id, PizzaRequestDto pizzaRequestDto) throws  PizzaException,  EntityNotFoundException{
         if (pizzaRequestDto == null)
-            throw new PizzaException("La pizza ne peux pas être nul");
+            throw new PizzaException("La pizza ne peut pas être nul");
         Optional<Pizza> optPizza = pizzaDAO.findById(id);
         if (optPizza.isEmpty())
             throw new EntityNotFoundException("L'id n'existe pas");
@@ -91,7 +91,7 @@ public class PizzaServiceImpl implements PizzaService {
     private static void remplacerPizza(Pizza nouvellePizza, Pizza pizzaExistante) {
         if (nouvellePizza.getNom()!=null) {
             if (nouvellePizza.getNom().isBlank())
-                throw new PizzaException("Le nom ne peux pas être vide");
+                throw new PizzaException("Le nom ne peut pas être vide");
             pizzaExistante.setNom(nouvellePizza.getNom());
         }
         if (nouvellePizza.getIngredient()!=null)
@@ -104,15 +104,15 @@ public class PizzaServiceImpl implements PizzaService {
 
     private static void verifierAjout(PizzaRequestDto pizzaRequestDto) {
         if (pizzaRequestDto == null)
-            throw new PizzaException("La pizza ne peux pas être nul");
+            throw new PizzaException("La pizza ne peut pas être nul");
         if (pizzaRequestDto.nom() == null || pizzaRequestDto.nom().isBlank())
-            throw new PizzaException("Le nom ne peux pas être nul, ou vide");
+            throw new PizzaException("Le nom ne peut pas être nul, ou vide");
         if (pizzaRequestDto.id_ingredient() == null || pizzaRequestDto.id_ingredient().isEmpty())
-            throw new PizzaException("La liste des ingrédients ne peux pas être nul ou vide");
+            throw new PizzaException("La liste des ingrédients ne peut pas être nul ou vide");
         if (pizzaRequestDto.tarif() == null)
-            throw new PizzaException("Le tarif ne peux pas être nul");
+            throw new PizzaException("Le tarif ne peut pas être nul");
         if (pizzaRequestDto.actif() == null)
-            throw new PizzaException("Le status ne peux pas être nul");
+            throw new PizzaException("Le status ne peut pas être nul");
     }
 
 

@@ -21,9 +21,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-
 @ExtendWith(MockitoExtension.class)
 public class PizzaTest {
     @Mock
@@ -37,45 +34,45 @@ public class PizzaTest {
     @Test
     void testAjouterNull() {
         PizzaException pe = Assertions.assertThrows(PizzaException.class, () -> service.ajouter(null));
-        Assertions.assertEquals("La pizza ne peux pas être nul", pe.getMessage());
+        Assertions.assertEquals("La pizza ne peut pas être nul", pe.getMessage());
     }
 
 
     @Test
     void testAjouterNomNull() {
         PizzaException ie = Assertions.assertThrows(PizzaException.class, () -> service.ajouter(new PizzaRequestDto( null, tarifDefini(), List.of(1,2),true)));
-        Assertions.assertEquals("Le nom ne peux pas être nul, ou vide", ie.getMessage());
+        Assertions.assertEquals("Le nom ne peut pas être nul, ou vide", ie.getMessage());
     }
 
     @Test
     void testAjouterNomBlank() {
         PizzaException ie = Assertions.assertThrows(PizzaException.class, () -> service.ajouter(new PizzaRequestDto( "", tarifDefini(), List.of(1,2),true)));
-        Assertions.assertEquals("Le nom ne peux pas être nul, ou vide", ie.getMessage());
+        Assertions.assertEquals("Le nom ne peut pas être nul, ou vide", ie.getMessage());
     }
 
 
     @Test
     void testAjouterListeIngredientNull(){
         PizzaException ie = Assertions.assertThrows(PizzaException.class, () -> service.ajouter(new PizzaRequestDto( "Quattre Fromages", tarifDefini(), null,true)));
-        Assertions.assertEquals("La liste des ingrédients ne peux pas être nul ou vide", ie.getMessage());
+        Assertions.assertEquals("La liste des ingrédients ne peut pas être nul ou vide", ie.getMessage());
     }
 
     @Test
     void testAjouterListeIngredientvide(){
         PizzaException ie = Assertions.assertThrows(PizzaException.class, () -> service.ajouter(new PizzaRequestDto("Quattre Fromages", tarifDefini(), List.of(),true)));
-        Assertions.assertEquals("La liste des ingrédients ne peux pas être nul ou vide", ie.getMessage());
+        Assertions.assertEquals("La liste des ingrédients ne peut pas être nul ou vide", ie.getMessage());
     }
 
     @Test
     void testAjoutertarifNull(){
         PizzaException ie = Assertions.assertThrows(PizzaException.class, () -> service.ajouter(new PizzaRequestDto( "Quattre Fromages", null, List.of(1,2),true)));
-        Assertions.assertEquals("Le tarif ne peux pas être nul", ie.getMessage());
+        Assertions.assertEquals("Le tarif ne peut pas être nul", ie.getMessage());
     }
 
     @Test
     void testAjouteractifNull(){
         PizzaException ie = Assertions.assertThrows(PizzaException.class, () -> service.ajouter(new PizzaRequestDto( "Quattre Fromages", tarifDefini(), List.of(1,2),null)));
-        Assertions.assertEquals("Le status ne peux pas être nul", ie.getMessage());
+        Assertions.assertEquals("Le status ne peut pas être nul", ie.getMessage());
     }
 
     @Test
@@ -182,7 +179,7 @@ public class PizzaTest {
     @Test
     void testModifierNull(){
         PizzaException pe = Assertions.assertThrows(PizzaException.class,()->service.modifier(1,null));
-        Assertions.assertEquals("La pizza ne peux pas être nul", pe.getMessage());
+        Assertions.assertEquals("La pizza ne peut pas être nul", pe.getMessage());
     }
     @Test
     void testModifierIdNonExistante(){
@@ -198,7 +195,7 @@ public class PizzaTest {
         Mockito.when(daoMock.findById(1)).thenReturn(Optional.of(nouvellePizza));
         Mockito.when(mapperMock.toPizza(pizzaRequestDto)).thenReturn(nouvellePizza);
         PizzaException pe = Assertions.assertThrows(PizzaException.class, ()->service.modifier(1,pizzaRequestDto));
-        Assertions.assertEquals("Le nom ne peux pas être vide", pe.getMessage());
+        Assertions.assertEquals("Le nom ne peut pas être vide", pe.getMessage());
     }
 
     @Test

@@ -84,7 +84,7 @@ class IngredientControllerTest {
                                 .content(objectMapper.writeValueAsString(ingredient)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.type").value("Erreur validation"))
-                .andExpect(jsonPath("$.message").value("Le nom ne peux pas être null, ou vide"));
+                .andExpect(jsonPath("$.message").value("Le nom ne peut pas être null, ou vide"));
 
     }
 
