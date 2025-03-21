@@ -15,10 +15,10 @@ public record PizzaRequestDto (
          @Schema(description = "tarif de la pizza", example = "GRANDE, 17.5")
          @NotNull(message =  "Le tarif est obligatoire")
          Map<Taille, Double> tarif,
-         @Schema(description = "liste Ingrédient de la pizza", example = "tomates, fromages, annanas")
+         @Schema(description = "liste Ingrédient de la pizza", example = "1,2")
          @NotBlank(message = "La liste est obligatoire")
          List<Integer> id_ingredient,
-         @Schema(description = "Pizza disponible", example = "true")
+         @Schema(description = "pizza disponible", example = "true")
          @NotBlank(message = "Le status est obligatoire")
          Boolean actif
 ) {

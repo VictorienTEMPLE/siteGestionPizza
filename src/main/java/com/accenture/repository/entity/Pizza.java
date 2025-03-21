@@ -6,8 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-
-import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
@@ -40,6 +38,4 @@ public class Pizza {
         this.ingredient = ingredient;
         this.actif = actif;
     }
-
-
 }
