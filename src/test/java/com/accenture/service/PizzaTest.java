@@ -4,8 +4,6 @@ import com.accenture.exception.PizzaException;
 import com.accenture.repository.PizzaDAO;
 import com.accenture.repository.entity.Ingredient;
 import com.accenture.repository.entity.Pizza;
-import com.accenture.service.dto.IngredientRequestDto;
-import com.accenture.service.dto.IngredientResponseDto;
 import com.accenture.service.dto.PizzaRequestDto;
 import com.accenture.service.dto.PizzaResponseDto;
 import com.accenture.service.mapper.PizzaMapper;

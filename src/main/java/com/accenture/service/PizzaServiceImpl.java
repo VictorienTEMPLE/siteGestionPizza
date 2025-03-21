@@ -1,7 +1,9 @@
 package com.accenture.service;
 
 import com.accenture.exception.PizzaException;
+import com.accenture.repository.IngredientDAO;
 import com.accenture.repository.PizzaDAO;
+import com.accenture.repository.entity.Ingredient;
 import com.accenture.repository.entity.Pizza;
 import com.accenture.service.dto.PizzaRequestDto;
 import com.accenture.service.dto.PizzaResponseDto;
@@ -19,30 +21,38 @@ public class PizzaServiceImpl implements PizzaService {
     public static final String ID_EXISTE_PAS = "L'id n'existe pas";
     private final PizzaDAO pizzaDAO;
     private final PizzaMapper pizzaMapper;
+    private final IngredientDAO ingredientDAO;
 
-    public PizzaServiceImpl(PizzaDAO pizzaDAO, PizzaMapper pizzaMapper) {
+    public PizzaServiceImpl(PizzaDAO pizzaDAO, PizzaMapper pizzaMapper, IngredientDAO ingredientDAO) {
         this.pizzaDAO = pizzaDAO;
         this.pizzaMapper = pizzaMapper;
+        this.ingredientDAO = ingredientDAO;
     }
 
     @Override
     public PizzaResponseDto ajouter(PizzaRequestDto pizzaRequestDto) throws PizzaException {
         verifierAjout(pizzaRequestDto);
         Pizza pizza = pizzaMapper.toPizza(pizzaRequestDto);
+        List<Ingredient> listeIngredientNonDispo = pizzaRequestDto.id_ingredient().stream()
+                .map(id -> ingredientDAO.findById(id).orElseThrow(() -> new PizzaException("Ingrédient n'existe pas")))
+                .filter(ingredient -> !ingredient.getEnStock())
+                .toList();
+        if (!listeIngredientNonDispo.isEmpty())
+            pizza.setActif(false);
         Pizza pizzaEnreg = pizzaDAO.save(pizza);
-        System.out.println(pizza);
         return pizzaMapper.toPizzaResponseDto(pizzaEnreg);
     }
 
 
     @Override
-    public PizzaResponseDto supprimer(int id) throws EntityNotFoundException{
-        Pizza pizzaASupprimer = pizzaDAO.findById(id).orElseThrow(()->new EntityNotFoundException(ID_EXISTE_PAS));
+    public PizzaResponseDto supprimer(int id) throws EntityNotFoundException {
+        Pizza pizzaASupprimer = pizzaDAO.findById(id).orElseThrow(() -> new EntityNotFoundException(ID_EXISTE_PAS));
         pizzaASupprimer.setId(id);
         pizzaASupprimer.setActif(false);
         pizzaDAO.save(pizzaASupprimer);
         return pizzaMapper.toPizzaResponseDto(pizzaASupprimer);
     }
+
     /**
      * <p>La méthode List<PizzaResponseDto> trouverTous() permet de récupérer la liste de toutes les pizza.</p> *
      * * @return Une liste d'objets <code>PizzaResponseDto</code> représentant les pizzas. </code>
@@ -50,7 +60,7 @@ public class PizzaServiceImpl implements PizzaService {
 
 
     @Override
-    public List<PizzaResponseDto> trouverTous(){
+    public List<PizzaResponseDto> trouverTous() {
         return pizzaDAO.findAll()
                 .stream()
                 .map(pizzaMapper::toPizzaResponseDto)
@@ -63,8 +73,8 @@ public class PizzaServiceImpl implements PizzaService {
      **/
 
     @Override
-    public PizzaResponseDto filtrerParId(int id) throws EntityNotFoundException{
-        Pizza pizzaTrouve = pizzaDAO.findById(id).orElseThrow(()-> new EntityNotFoundException(ID_EXISTE_PAS));
+    public PizzaResponseDto filtrerParId(int id) throws EntityNotFoundException {
+        Pizza pizzaTrouve = pizzaDAO.findById(id).orElseThrow(() -> new EntityNotFoundException(ID_EXISTE_PAS));
         return pizzaMapper.toPizzaResponseDto(pizzaTrouve);
     }
 
@@ -74,8 +84,8 @@ public class PizzaServiceImpl implements PizzaService {
      **/
 
     @Override
-    public PizzaResponseDto filtrerParNom(String nom) throws EntityNotFoundException{
-        Pizza pizzaTrouve = pizzaDAO.findByNomIgnoreCase(nom).orElseThrow(()-> new EntityNotFoundException("Pizza avec ce nom n'existe pas"));
+    public PizzaResponseDto filtrerParNom(String nom) throws EntityNotFoundException {
+        Pizza pizzaTrouve = pizzaDAO.findByNomIgnoreCase(nom).orElseThrow(() -> new EntityNotFoundException("Pizza avec ce nom n'existe pas"));
         return pizzaMapper.toPizzaResponseDto(pizzaTrouve);
     }
 
@@ -84,7 +94,7 @@ public class PizzaServiceImpl implements PizzaService {
      * * @return Une liste d'objets <code>PizzaResponseDto</code> représentant la pizza trouvée. </code>
      **/
     @Override
-    public List<PizzaResponseDto> filtrerParIngredient(String nom){
+    public List<PizzaResponseDto> filtrerParIngredient(String nom) {
         return pizzaDAO.findByIngredientNom(nom)
                 .stream()
                 .map(pizzaMapper::toPizzaResponseDto)
@@ -94,18 +104,27 @@ public class PizzaServiceImpl implements PizzaService {
     /**
      * <p>La méthode PizzaResponseDto modifier(int id, PizzaRequestDto pizzaRequestDto) permet de récupérer une pizza par Ingredient.</p> *
      * * @return retourne une PizzaResponseDto avec les données modifiées <code>PizzaRequestDto</code> représente la pizza une fois modifiée. </code>
-     * @throws PizzaException lance une exception d'un élément de pizza.
+     *
+     * @throws PizzaException          lance une exception d'un élément de pizza.
      * @throws EntityNotFoundException lance une exception dans le cas ou l'entité est nul.
      **/
 
     @Override
-    public PizzaResponseDto modifier(int id, PizzaRequestDto pizzaRequestDto) throws  PizzaException,  EntityNotFoundException{
+    public PizzaResponseDto modifier(int id, PizzaRequestDto pizzaRequestDto) throws PizzaException, EntityNotFoundException {
         if (pizzaRequestDto == null)
             throw new PizzaException("La pizza ne peut pas être nul");
         Optional<Pizza> optPizza = pizzaDAO.findById(id);
         if (optPizza.isEmpty())
-            throw new EntityNotFoundException("L'id n'existe pas");
+            throw new EntityNotFoundException(ID_EXISTE_PAS);
         Pizza nouvellePizza = pizzaMapper.toPizza(pizzaRequestDto);
+        if (pizzaRequestDto.id_ingredient() != null) {
+            List<Ingredient> listeIngredientNonDispo = pizzaRequestDto.id_ingredient().stream()
+                    .map(id_ingredient -> ingredientDAO.findById(id_ingredient).orElseThrow(() -> new PizzaException("Ingrédient n'existe pas")))
+                    .filter(ingredient -> !ingredient.getEnStock())
+                    .toList();
+            if (!listeIngredientNonDispo.isEmpty())
+                nouvellePizza.setActif(false);
+        }
         Pizza pizzaExistante = optPizza.get();
         remplacerPizza(nouvellePizza, pizzaExistante);
         Pizza pizzaEnreg = pizzaDAO.save(pizzaExistante);
@@ -114,26 +133,29 @@ public class PizzaServiceImpl implements PizzaService {
 
     /**
      * <p>La méthode remplacerPizza(Pizza nouvellePizza, Pizza pizzaExistante) permet de verifier si les éléments de pizzaExistante correspondent ou non à nouvellePizza
-     *  et ainsi, dans le cas ou les informations sont différentes, la méthode remplace les information de pizzaExistante avec celle de nouvelle Pizza.</p>
-     *  @throws PizzaException lance une exception d'un élément de pizza.
+     * et ainsi, dans le cas ou les informations sont différentes, la méthode remplace les information de pizzaExistante avec celle de nouvelle Pizza.</p>
+     *
+     * @throws PizzaException lance une exception d'un élément de pizza.
      **/
 
     private static void remplacerPizza(Pizza nouvellePizza, Pizza pizzaExistante) {
-        if (nouvellePizza.getNom()!=null) {
+        if (nouvellePizza.getNom() != null) {
             if (nouvellePizza.getNom().isBlank())
                 throw new PizzaException("Le nom ne peut pas être vide");
             pizzaExistante.setNom(nouvellePizza.getNom());
         }
-        if (nouvellePizza.getIngredient()!=null)
+        if (nouvellePizza.getIngredient() != null)
             pizzaExistante.setIngredient(nouvellePizza.getIngredient());
-        if (nouvellePizza.getTarif()!=null)
+        if (nouvellePizza.getTarif() != null)
             pizzaExistante.setTarif(nouvellePizza.getTarif());
-        if (nouvellePizza.getActif()!=null)
+        if (nouvellePizza.getActif() != null)
             pizzaExistante.setActif(nouvellePizza.getActif());
     }
+
     /**
      * <p>La méthode verifierAjout(PizzaRequestDto pizzaRequestDto) permet de verifier si les éléments de <code>PizzaRequestDto</code> sont null, si oui, il déclenche alors une <code>PizzaException.</code></p>
-     *  @throws PizzaException lance une exception d'un élément de pizza.
+     *
+     * @throws PizzaException lance une exception d'un élément de pizza.
      **/
     private static void verifierAjout(PizzaRequestDto pizzaRequestDto) {
         if (pizzaRequestDto == null)
@@ -146,8 +168,8 @@ public class PizzaServiceImpl implements PizzaService {
             throw new PizzaException("Le tarif ne peut pas être nul");
         if (pizzaRequestDto.actif() == null)
             throw new PizzaException("Le status ne peut pas être nul");
-    }
 
+    }
 
 
 }

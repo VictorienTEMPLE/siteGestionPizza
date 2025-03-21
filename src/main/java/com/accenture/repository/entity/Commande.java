@@ -19,6 +19,7 @@ public class Commande {
     private int id;
     @ManyToOne
     private Client client;
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PizzaTailleQuantite> listePizza;
     private Statut statut;
     private Double tarif;

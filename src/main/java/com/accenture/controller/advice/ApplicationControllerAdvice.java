@@ -1,6 +1,7 @@
 package com.accenture.controller.advice;
 
 import com.accenture.exception.ClientException;
+import com.accenture.exception.CommandeException;
 import com.accenture.exception.IngredientException;
 import com.accenture.exception.PizzaException;
 import jakarta.persistence.EntityNotFoundException;
@@ -32,6 +33,13 @@ public class ApplicationControllerAdvice {
 
     @ExceptionHandler(ClientException.class)
     public ResponseEntity<MessageError> handleClientException(ClientException e){
+        log.error("Erreur validation : {}", e.getMessage(), e);
+        MessageError me = new MessageError(LocalDateTime.now(), "Erreur validation", e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(me);
+    }
+
+    @ExceptionHandler(CommandeException.class)
+    public ResponseEntity<MessageError> handleCommandeException(CommandeException e){
         log.error("Erreur validation : {}", e.getMessage(), e);
         MessageError me = new MessageError(LocalDateTime.now(), "Erreur validation", e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(me);
