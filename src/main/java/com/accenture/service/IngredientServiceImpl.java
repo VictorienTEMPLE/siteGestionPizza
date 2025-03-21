@@ -21,10 +21,19 @@ public class IngredientServiceImpl implements IngredientService{
     private final IngredientDAO ingredientDAO;
     private final IngredientMapper ingredientMapper;
 
+
     public IngredientServiceImpl(IngredientDAO ingredientDAO, IngredientMapper ingredientMapper) {
         this.ingredientDAO = ingredientDAO;
         this.ingredientMapper = ingredientMapper;
     }
+
+    /**
+     * <p>La méthode <code>ajouter</code> permet d'ajouter un nouveau ingrédient dans la base de données.</p>
+     *
+     * @param ingredientRequestDto Les inforamtions de l'ingrédient à ajouter,
+     * @return Un objet <code>IngredientResponseDto</code> représentant l'ingrédient ajouté.
+     * @throws IngredientException Si une erreur se produit lors de la validation de l'ingrédient.
+     */
     @Override
     public IngredientResponseDto ajouter(IngredientRequestDto ingredientRequestDto) throws IngredientException {
         verifierAjout(ingredientRequestDto);
@@ -33,6 +42,15 @@ public class IngredientServiceImpl implements IngredientService{
         return ingredientMapper.toIngredientResponseDto(ingredientEnreg);
     }
 
+    /**
+     * <p>La méthode <code>modifier</code> permet de modifier un ingrédient existant dans la base de données.</p>
+     *
+     * @param id L'id de l'ingrédient à modifier.
+     * @param ingredientRequestDto Les informations de l'ingrédient à modifier.
+     * @return Un objet <code>IngredientResponseDto</code> représentant l'ingrédient modifié.
+     * @throws IngredientException Si une erreur se produit lors de la validation de l'ingrédient.
+     * @throws EntityNotFoundException Si l'ingrédient avec l'id donné n'est pas trouvé dans la base de données.
+     */
     @Override
     public IngredientResponseDto modifier(int id, IngredientRequestDto ingredientRequestDto) throws IngredientException, EntityNotFoundException{
         Optional<Ingredient> optIngredient = ingredientDAO.findById(id);
@@ -45,6 +63,11 @@ public class IngredientServiceImpl implements IngredientService{
         return ingredientMapper.toIngredientResponseDto(ingredientEnreg);
     }
 
+    /**
+     * <p>La méthode <code>lister</code> permet de récupérer tous les ingrédients présents dans la base de données.</p>
+     *
+     * @return Une liste d'objets <code>IngredientResponseDto</code> représentant tous les ingrédients.
+     */
     @Override
     public List<IngredientResponseDto> lister() {
         List<Ingredient> listIngredient =ingredientDAO.findAll();
