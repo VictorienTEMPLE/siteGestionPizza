@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
 //Spring va regarder dans les classes @Configuration, chercher les @Bean, et créer un instance dans le conteneur de spring à utiliser
 public class ApiConfiguration {
     @Bean
-    public OpenAPI apiConfiguration() {
+    public OpenAPI swaggerConfiguration() {
         return new OpenAPI()
                 .info(new Info()
                         .title("Gestion de Pizzeria")
