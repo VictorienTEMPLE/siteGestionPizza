@@ -20,7 +20,7 @@ public class ApiConfiguration {
                         .version("1.0.1")
                         .contact(new Contact()
                                 .name("Victorien Temple et Tianhong Hamel-Huang")
-                                .email("victorien-tianhong@accenture.com"))
+                                .email("victorien-tianhong@mail.com"))
                 );
     }
 }
